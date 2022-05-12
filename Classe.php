@@ -16,18 +16,18 @@ class Classe implements IModel {
         
     }
     
-    public  static function selectAll(){
-        $sql="select * from {self::table}";
+    //public  static function selectAll(){
+        //$sql="select * from {self::table}";
         
-    }
-    public  static function delete($id){
-        $sql="delete from {self::table} where id={$id}";
+   // }
+    //public  static function delete($id){
+       // $sql="delete from {self::table} where id={$id}";
         
-    }
-    public  static function selectById($id){
-        $sql="select * from {self::table} where id={$id}";
+   // }
+    //public  static function selectById($id){
+        //$sql="select * from {self::table} where id={$id}";
         
-    }
+   // }
     //les attributs navigationnels
     //one to many avec cours
     private array $cours=[];
@@ -114,6 +114,26 @@ class Classe implements IModel {
     public function setInscriptions($inscriptions)
     {
         $this->inscriptions = $inscriptions;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of niveau
+     */ 
+    public function getNiveau()
+    {
+        return $this->niveau;
+    }
+
+    /**
+     * Set the value of niveau
+     *
+     * @return  self
+     */ 
+    public function setNiveau($niveau)
+    {
+        $this->niveau = $niveau;
 
         return $this;
     }
