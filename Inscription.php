@@ -1,131 +1,78 @@
 <?php
-class Inscription implements IModel {
-    private int $id;
-    private  $dateInscription;
-    private $annee;
-    private static $table="inscriptions";
-
-    public function insert(){
-        $sql="insert into {$this->table}(date_inscription,annee)value({$this->dateInscription},{$this->annee})";
-    }
-    public function update(){
-        $sql="update {$this->table} set date_inscription={$this->dateInscription},annee={$this->annee} where id={$this->id}";
-        
-    }
+namespace App\Models;
+use App\Core\Model; 
+class Inscription extends Model{
     
-    public  static function selectAll(){
-        $sql="select * from {self::table}";
-        
-    }
-    public  static function delete($id){
-        $sql="delete from {self::table} where id={$id}";
-        
-    }
-    public  static function selectById($id){
-        $sql="select * from {self::table} where id={$id}";
-        
-    }
+    private \DateTime $dateInscription;
+    private string  $annee;
     
-
-    //many to one avec classe
-    private Classe $classe;
-
-    //many to one avec etudiant
-
-    private Etudiant $etudiant;
-    //fonctions
-
-    //many to one avec classe
-
+    //1-many to one avec classe
     public function classe():Classe{
-        $sql="select c.* from inscriptions i,classe c where c.id=i.classe_id where i.id={$this->id}";
+        $sql="select cl.* from inscriptions i,classe cl where i.classe_id=cl.id and i.id=?";
+  
         return new Classe();
+        parent::selectWhere($sql,[$this->id],true);
     }
 
-    //many to one avec etudiant
-
-
-    public function etudiant():Etudiant{
-        $sql="select e.* from inscriptions i,etudiant e where e.id=i.etudiant_id where i.id={$this->id}";
-        
+   
+    //2-many to one avec etudiant
+    public function etudiants():Etudiants{
+        $sql="select e.* from inscriptions i,etudiants e where i.etudiants_id=e.id and i.id=?";
+  
         return new Etudiant();
+        parent::selectWhere($sql,[$this->id],true);
     }
-
-    //methodes
+    
     public function __construct(){
-        //on appelle le constructeur
+        parent::$table="inscriptions";  
+        
     }
-        //setters ou mutations
-    
-        public function setDateInscription($dateinscription){
-            $this->dateinscription-$dateinscription;
-        }
-        
-        public function setAnnee($annee){
-            $this->annee-$annee;
-        }
-        
-        //getters
-        public function getDateInscription(){
-            return $this->dateinscription;
-        }
-        
-        public function Annee(){
-            return $this->annee;
-        }
-        
-    
-    
-    
-    
-    
-
-    
-    
-
-    
-
-
 
     /**
-     * Get the value of classe
+     * Get the value of dateInscription
      */ 
-    public function getClasse()
+    public function getDateInscription()
     {
-        return $this->classe;
+        return $this->dateInscription;
     }
 
     /**
-     * Set the value of classe
+     * Set the value of dateInscription
      *
      * @return  self
      */ 
-    public function setClasse($classe)
+    public function setDateInscription($dateInscription)
     {
-        $this->classe = $classe;
+        $this->dateInscription = $dateInscription;
 
         return $this;
     }
 
     /**
-     * Get the value of etudiant
+     * Get the value of annee
      */ 
-    public function getEtudiant()
+    public function getAnnee()
     {
-        return $this->etudiant;
+        return $this->annee;
     }
 
     /**
-     * Set the value of etudiant
+     * Set the value of annee
      *
      * @return  self
      */ 
-    public function setEtudiant($etudiant)
+    public function setAnnee($annee)
     {
-        $this->etudiant = $etudiant;
+        $this->annee = $annee;
 
         return $this;
     }
-
-    
+    public function insert(){
+        
+        $sql="INSERT INTO  ".parent::$table."  (dateInscription,annee)VALUES ( ?, ?);";
+             
+            
+       return parent::database()->executeUpdate($sql,[$this->dateInscription,$this->annee]);
+                                                
+   }
 }

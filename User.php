@@ -1,60 +1,98 @@
 <?php
-class User implements IModel {
-    //attributs d'instance
-    protected int $id;
-    protected $login;
-    protected $password;
-    protected $role;
-    protected static $table="users";
+namespace App\Models; 
+use App\Core\Model;
+class User extends Model{
+    //Attributs 
+     protected int   $id;
+     protected string $login;
+     protected string $password;
+     protected static string $role;
+
+    //Methodes
+    //Constructeur
+    public function __construct()
+    {
+        parent::$table="user";  
+    }
+    //Getters => Obtenir la valeur d'un attribut private ou protected
+                //a partir de l'interface de la classe
+    public function getId():int{
+       return $this->id;
+    }
+
+    //Setters=> Modifie la valeur d'un attribut private ou protected
+                //a partir de l'interface de la classe
+    public function setId(int $id ):void{
+               $this->id=$id;   
+    }
+
+     /**
+      * Get the value of login
+      */ 
+     public function getLogin()
+     {
+          return $this->login;
+     }
+
+     /**
+      * Set the value of login
+      *
+      * @return  self
+      */ 
+     public function setLogin($login)
+     {
+          $this->login = $login;
+
+          return $this;
+     }
+
+     /**
+      * Get the value of password
+      */ 
+     public function getPassword()
+     {
+          return $this->password;
+     }
+
+     /**
+      * Set the value of password
+      *
+      * @return  self
+      */ 
+     public function setPassword($password)
+     {
+          $this->password = $password;
+
+          return $this;
+     }
+
+     /**
+      * Get the value of role
+      */ 
+     public function getRole()
+     {
+          return $this->role;
+     }
+
+     /**
+      * Set the value of role
+      *
+      * @return  self
+      */ 
+     public function setRole($role)
+     {
+          $this->role = $role;
+
+          return $this;
+     }
 
     public function insert(){
-        $sql="insert into {$this->table}(login,password)value({$this->login},{$this->password})";
-    }
-    public function update(){
-        $sql="update {$this->table } set login={$this->login},password={$this->password} where id={$this->id}";
-        
-    }
-    
-    public  static function selectAll(){
-        $sql="select * from {self::table}";
-        
-    }
-    public  static function delete($id){
-        $sql="delete from {self::table} where id={$id}";
-        
-    }
-    public  static function selectById($id){
-        $sql="select * from {self::table} where id={$id}";
-        
-    }
-    
-
-    //methodes
-    public function __construct(){
-        //on appelle le constructeur
-    }
-        //setters ou mutations
-    
-        public function setLogin($login){
-            $this->login-$login;
-        }
-        public function setPassword($password){
-            $this->password-$password;
-        }
-        
-        //getters
-        public function getLogin(){
-            return $this->login;
-        }
-        public function getPassword(){
-            return $this->password;
-        }
-        
-    
-    
-    
-    
-    
-
-    
+        //die(parent::$table);
+        $sql="INSERT INTO  ".parent::$table."  (`login`, `password`,  `role`)VALUES ( ?, ?, ?);";
+             
+            
+       return parent::database()->executeUpdate($sql,[$this->login,$this->password,self::$role]);
+                                                
+   }
 }
+    

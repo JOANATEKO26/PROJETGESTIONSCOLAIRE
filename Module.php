@@ -1,90 +1,53 @@
 <?php
-class Module implements IModel{
-    private int $id;
-    private  $libelle;
-    private static $table="modules";
+namespace App\Models; 
+use App\Core\Model; 
+ 
+class Module extends Model{
+   private int $id;  
+   private string $libelle;
 
 
-    public function insert(){
-        $sql="insert into  {$this->table}(libelle)value({$this->libelle})";
+   //Association 
+   
+   //1-OneToMany avec Cours
+   
+     public function cours():array{
+      $sql="select m.* from cours c,module m where c.module_id=m.id and m.id=?"; 
+      return [];
+      parent::selectWhere($sql,[$this->id]);
     }
-    public function update(){
-        $sql="update  {$this->table} set libelle={$this->libelle} where id={$this->id}";
-        
-    }
-    
-    public  static function selectAll(){
-        $sql="select * from {self::table}";
-        
-    }
-    public  static function delete($id){
-        $sql="delete from   {self::table} where id={$id}";
-        
-    }
-    public  static function selectById($id){
-        $sql="select * from   {self::table} where id={$id}";
-        
-    }
-    
-
-
-
-    //les attributs navigationnels
-    //one to many avec cours
-    private  array $cours=[];
-    //fonctions
-    //one to many avec cours
-    public function cours():array{
-        $sql="select c.* from module m,cours c where c.id=i.cours_id where i.id={$this->id}";
-        return[];
-    }
-    
-
-    //methodes
-    public function __construct(){
-        //on appelle le constructeur
-    }
-        //setters ou mutations
-    
-        public function setLibelle($libelle){
-            $this->libelle-$libelle;
-        }
-        
-        
-        //getters
-        public function getLibelle(){
-            return $this->libelle;
-        }
-       
-        
-    
-    
-    
-    
-    
-
-    
-    
-
-    
-
-    /**
-     * Get the value of cours
-     */ 
-    public function getCours()
+    public function __construct()
     {
-        return $this->cours;
+      parent::$table="module"; 
+        
     }
+     
 
-    /**
-     * Set the value of cours
-     *
-     * @return  self
-     */ 
-    public function setCours($cours)
-    {
-        $this->cours = $cours;
+   /**
+    * Get the value of libelle
+    */ 
+   public function getLibelle()
+   {
+      return $this->libelle;
+   }
 
-        return $this;
-    }
+   /**
+    * Set the value of libelle
+    *
+    * @return  self
+    */ 
+   public function setLibelle($libelle)
+   {
+      $this->libelle = $libelle;
+
+      return $this;
+   }
+   public function insert(){
+        
+    $sql="INSERT INTO  ".parent::$table."  (id,libelle)VALUES ( ?, ?);";
+         
+        
+   return parent::database()->executeUpdate($sql,[$this->id,$this->libelle]);
+                                            
+}
 }

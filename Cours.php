@@ -1,102 +1,115 @@
 <?php
-class Cours implements IModel {
+namespace App\Models; 
+use App\Core\Model;
+class Cours extends Model{
     private int $id;
-    private  $heureDebut;
-    private $heureFin;
-    private $annee;
-    private static $table="cours";
+    private \DateTime $dateCours;
+    private string $heureDebut;
+    private string $heureFin;
 
-    public function insert(){
-        $sql="insert into {$this->table}(heure_debut,heure_fin,annee)value({$this->heureDebut},({$this->heureFin},{$this->annee})";
-    }
-    public function update(){
-        $sql="update {$this->table} set heure_debut={$this->heureDebut},heure_fin={$this->heureFin},annee={$this->annee} where id={$this->id}";
-        
-    }
-    
-    public  static function selectAll(){
-        $sql="select * from  {self::table}";
-        
-    }
-    public  static function delete(int $id){
-        $sql="delete from  {self::table} where id={$id}";
-        
-    }
-    public  static function selectById($id){
-        $sql="select * from  {self::table} where id={$id}";
-        
-    }
-    
-    //les attributs navigationnels
-    //many to one avec classe
-    private Classe $Classe;
 
-    //fonctions
-
-    //many to one avec classe
-
-    public function classe():Classe{
-        $sql="select c.* from cours c,classe c where c.id=c.classe_id where i.id={$this->id}";
-        return new Classe();
-    }
-    //many to one avec module
-    public function module():Module{
-        $sql="select m.* from cours c,module m where m.id=c.module_id where i.id={$this->id}";
-        return new Module();
-    }
-        
-
-    //methodes
-    public function __construct(){
-        //on appelle le constructeur
-    }
-        //setters ou mutations
-    
-        public function setHeureDebut($heuredebut){
-            $this->heuredebut-$heuredebut;
-        }
-        public function setHeureFin($heurefin){
-            $this->heurefin-$heurefin;
-        }
-        public function setAnnee($annee){
-            $this->annee-$annee;
-        }
-        
-        //getters
-        public function getHeureDebut(){
-            return $this->heuredebut;
-        }
-        public function getHeureFin(){
-            return $this->heurefin;
-        }
-        public function Annee(){
-            return $this->annee;
-        }
-        
-    
-    
-    
-    
-    
-    
-
-    /**
-     * Get the value of Classe
-     */ 
-    public function getClasse()
+    public function __construct()
     {
-        return $this->Classe;
+      parent::$table="cours";   
+    }
+
+
+    //Association
+     //1-ManyToOne avec Module
+        
+        public function module():Module{
+          $sql="select m.* from cours c,module m where c.module_id=m.id and c.id=?";
+          return new Module();
+          parent::selectWhere($sql,[$this->id],true);
+      }
+      //2-ManyToOne avec Professeur
+      public function professeur():Professeur{
+        $sql="select u.* from cours c,user u where c.professeur_id=u.id and c.id=?and role like 'ROLE_PROFESSEUR ";  
+        return new Professeur();
+        parent::selectWhere($sql,[$this->id],true);
+    }
+       
+       //3-ManyToOne avec Classe
+       public function classe():Classe{
+        $sql="select cl.* from cours c,classe cl where c.classe_id=cl.id and c.id=?";
+        return new Classe();
+        parent::selectWhere($sql,[$this->id],true);
+    }
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * Get the value of dateCours
+     */ 
+    public function getDateCours()
+    {
+        return $this->dateCours;
     }
 
     /**
-     * Set the value of Classe
+     * Set the value of dateCours
      *
      * @return  self
      */ 
-    public function setClasse($Classe)
+    public function setDateCours($dateCours)
     {
-        $this->Classe = $Classe;
+        $this->dateCours = $dateCours;
 
         return $this;
     }
+
+    /**
+     * Get the value of heureDebut
+     */ 
+    public function getHeureDebut()
+    {
+        return $this->heureDebut;
+    }
+
+    /**
+     * Set the value of heureDebut
+     *
+     * @return  self
+     */ 
+    public function setHeureDebut($heureDebut)
+    {
+        $this->heureDebut = $heureDebut;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of heureFin
+     */ 
+    public function getHeureFin()
+    {
+        return $this->heureFin;
+    }
+
+    /**
+     * Set the value of heureFin
+     *
+     * @return  self
+     */ 
+    public function setHeureFin($heureFin)
+    {
+        $this->heureFin = $heureFin;
+
+        return $this;
+    }
+
+    public function insert(){
+        
+      $sql="INSERT INTO  ".parent::$table."  (id,dateCours,heureDebut,heureFin)VALUES ( ?, ?, ?,?);";
+           
+          
+     return parent::database()->executeUpdate($sql,[$this->id,$this->dateCours,$this->heureDebut,$this->heureFin]);
+                                              
+ }
 }
