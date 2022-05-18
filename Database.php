@@ -12,7 +12,8 @@ class DataBase{
         //host : adresse du server BD
         try {
             //Essaie de te connecter
-            $this->pdo=new \PDO("mysql:dbname=gestion_scolaire;host=localhost","root","root");
+            $this->pdo=new \PDO("mysql:dbname=gestion_scolaire;host=127.0.0.1","root","");
+            
         } catch (\Exception $ex) {
               die("Erreur Connexion -Veuillez contacter votre Admin");
               //throw new BdConnexionException;
